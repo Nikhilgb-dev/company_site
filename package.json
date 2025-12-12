@@ -1,0 +1,26 @@
+{
+  "name": "stelix-website",
+  "version": "1.0.0",
+  "description": "Stelix - Premium AI Services Company Website (MERN Stack)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "client": "cd client && npm start",
+    "build": "cd client && npm run build",
+    "install-all": "npm install && cd client && npm install"
+  },
+  "keywords": ["AI", "agents", "automation", "MERN"],
+  "author": "Stelix",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.5.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "nodemailer": "^6.9.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
