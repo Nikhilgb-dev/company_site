@@ -1,6 +1,6 @@
 import React from "react";
 
-const DOWNLOAD_RESOURCES = [
+const DEFAULT_RESOURCES = [
   {
     id: "guide",
     title: "Practical Guide: Preparing Data for AI Projects",
@@ -21,9 +21,24 @@ const DOWNLOAD_RESOURCES = [
   },
 ];
 
-export const StartAiTransformationSection = () => {
+export const ResourceHighlightSection = ({
+  title,
+  ctaLabel = "Contact Us",
+  ctaHref,
+  onCtaClick,
+  resources = [],
+  className = "",
+}) => {
+  const items = resources.length ? resources : DEFAULT_RESOURCES;
+  const handleCtaClick = (event) => {
+    if (onCtaClick) {
+      event.preventDefault();
+      onCtaClick(event);
+    }
+  };
+
   return (
-    <section className="bg-[#002844] text-white">
+    <section className={`bg-[#002844] text-white ${className}`}>
       {/* Top CTA band */}
       <div className="relative mx-auto max-w-6xl px-4 py-12 text-center sm:py-16 lg:py-20">
         {/* LEFT decorative images */}
@@ -45,13 +60,26 @@ export const StartAiTransformationSection = () => {
         </div>
 
         <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl lg:text-[32px]">
-          Begin Your AI Journey
+          {title}
         </h2>
 
         <div className="mt-8 flex justify-center">
-          <button className="min-w-[160px] bg-[#FFB022] px-12 py-3 text-sm font-semibold uppercase tracking-wide text-[#002844]">
-            Contact Us
-          </button>
+          {ctaHref ? (
+            <a
+              href={ctaHref}
+              onClick={handleCtaClick}
+              className="min-w-[160px] bg-[#FFB022] px-12 py-3 text-sm font-semibold uppercase tracking-wide text-[#002844]"
+            >
+              {ctaLabel}
+            </a>
+          ) : (
+            <button
+              className="min-w-[160px] bg-[#FFB022] px-12 py-3 text-sm font-semibold uppercase tracking-wide text-[#002844]"
+              onClick={onCtaClick}
+            >
+              {ctaLabel}
+            </button>
+          )}
         </div>
       </div>
 
@@ -61,8 +89,8 @@ export const StartAiTransformationSection = () => {
       {/* Report cards */}
       <div className="mx-auto max-w-6xl">
         <div className="grid divide-y divide-white/20 md:grid-cols-3 md:divide-x md:divide-y-0">
-          {DOWNLOAD_RESOURCES.map((item) => (
-            <article key={item.id} className="relative min-h-[280px]">
+          {items.map((item) => (
+            <article key={item.id || item.title} className="relative min-h-[280px]">
               {/* Background image */}
               <div
                 className="absolute inset-0 bg-cover bg-center"
@@ -78,9 +106,21 @@ export const StartAiTransformationSection = () => {
                 </h3>
 
                 <div className="mt-10">
-                  <button className="inline-flex min-w-[150px] items-center justify-center border border-white px-8 py-2.5 text-sm font-semibold text-white">
-                    {item.ctaLabel}
-                  </button>
+                  {item.onClick ? (
+                    <button
+                      className="inline-flex min-w-[150px] items-center justify-center border border-white px-8 py-2.5 text-sm font-semibold text-white"
+                      onClick={() => item.onClick(item)}
+                    >
+                      {item.ctaLabel || "Download"}
+                    </button>
+                  ) : (
+                    <a
+                      href={item.ctaHref || "#"}
+                      className="inline-flex min-w-[150px] items-center justify-center border border-white px-8 py-2.5 text-sm font-semibold text-white"
+                    >
+                      {item.ctaLabel || "Download"}
+                    </a>
+                  )}
                 </div>
               </div>
             </article>
@@ -88,5 +128,16 @@ export const StartAiTransformationSection = () => {
         </div>
       </div>
     </section>
+  );
+};
+
+export const StartAiTransformationSection = (props) => {
+  return (
+    <ResourceHighlightSection
+      title="Begin Your AI Journey"
+      ctaLabel="Contact Us"
+      resources={DEFAULT_RESOURCES}
+      {...props}
+    />
   );
 };
