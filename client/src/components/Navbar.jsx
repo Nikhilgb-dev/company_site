@@ -6,6 +6,7 @@ import logo from '../assets/logo.png';
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
+  const [industriesOpen, setIndustriesOpen] = useState(false);
 
   const navItems = [
     { name: 'Services', href: '/services' },
@@ -23,6 +24,15 @@ export default function Navbar() {
     { label: 'DATA + ANALYTICS', href: '/services/data-analytics' },
     // { label: 'MANAGED SUPPORT', href: '/services#managed-support' },
     // { label: 'TALENT ON DEMAND', href: '/services#talent-on-demand' },
+  ];
+
+  const industryLinks = [
+    { label: 'FINANCIAL SERVICES', href: '/industries/financial-services' },
+    { label: 'HEALTHCARE', href: '/industries/healthcare' },
+    { label: 'HIGH TECH', href: '/industries/high-tech' },
+    { label: 'MANUFACTURING', href: '/industries/manufacturing' },
+    { label: 'RETAIL', href: '/industries/retail' },
+    { label: 'TELECOM & MEDIA', href: '/industries/telecom-media' },
   ];
 
   return (
@@ -72,6 +82,44 @@ export default function Navbar() {
                           className="block px-4 py-2 text-xs font-semibold tracking-wide text-white/90 hover:text-white hover:bg-white/10 transition"
                         >
                           {service.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+            if (item.name === 'Industries') {
+              return (
+                <div
+                  key={item.name}
+                  className="relative"
+                  onMouseEnter={() => setIndustriesOpen(true)}
+                  onMouseLeave={() => setIndustriesOpen(false)}
+                >
+                  <Link
+                    to={item.href}
+                    className="text-white/90 hover:text-white transition duration-200 font-medium px-1 py-1 inline-flex items-center gap-1"
+                  >
+                    {item.name}
+                    <span className="text-xs opacity-80">v</span>
+                  </Link>
+
+                  <div
+                    onMouseEnter={() => setIndustriesOpen(true)}
+                    onMouseLeave={() => setIndustriesOpen(false)}
+                    className={`absolute left-0 top-full pt-2 w-72 rounded-xl bg-sky-700/95 backdrop-blur-md border border-white/10 shadow-2xl transition-all duration-200 ${
+                      industriesOpen ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-2 pointer-events-none'
+                    }`}
+                  >
+                    <div className="py-2">
+                      {industryLinks.map((industry) => (
+                        <Link
+                          key={industry.label}
+                          to={industry.href}
+                          className="block px-4 py-2 text-xs font-semibold tracking-wide text-white/90 hover:text-white hover:bg-white/10 transition"
+                        >
+                          {industry.label}
                         </Link>
                       ))}
                     </div>
@@ -134,9 +182,9 @@ export default function Navbar() {
         <Container className="py-4">
           <div className="flex flex-col gap-2">
             {navItems.map((item) => {
-              if (item.name === 'Services') {
-                return (
-                  <div key={item.name} className="flex flex-col gap-2">
+            if (item.name === 'Services') {
+              return (
+                <div key={item.name} className="flex flex-col gap-2">
                     <Link
                       to={item.href}
                       className="block text-white/95 font-medium py-3 px-2 rounded-md hover:bg-white/6 transition"
@@ -156,9 +204,34 @@ export default function Navbar() {
                         </Link>
                       ))}
                     </div>
+                </div>
+              );
+            }
+            if (item.name === 'Industries') {
+              return (
+                <div key={item.name} className="flex flex-col gap-2">
+                  <Link
+                    to={item.href}
+                    className="block text-white/95 font-medium py-3 px-2 rounded-md hover:bg-white/6 transition"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                  <div className="ml-3 pl-2 border-l border-white/12 flex flex-col gap-1 pb-2">
+                    {industryLinks.map((industry) => (
+                      <Link
+                        key={industry.label}
+                        to={industry.href}
+                        className="text-xs font-semibold tracking-wide text-white/80 hover:text-white transition"
+                        onClick={() => setMobileOpen(false)}
+                      >
+                        {industry.label}
+                      </Link>
+                    ))}
                   </div>
-                );
-              }
+                </div>
+              );
+            }
 
               return (
                 <Link

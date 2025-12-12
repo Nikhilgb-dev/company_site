@@ -45,6 +45,7 @@ const contentVariants = {
 const TopNavbar = () => {
   const [open, setOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
+  const [industriesOpen, setIndustriesOpen] = useState(false);
   const navigate = useNavigate();
 
   const servicesItems = [
@@ -54,6 +55,15 @@ const TopNavbar = () => {
     { label: "DATA + ANALYTICS", path: "/services/data-analytics" },
     { label: "MANAGED SUPPORT", path: "/services/managed-support" },
     { label: "TALENT ON DEMAND", path: "/services/talent-on-demand" },
+  ];
+
+  const industriesItems = [
+    { label: "FINANCIAL SERVICES", path: "/industries/financial-services" },
+    { label: "HEALTHCARE", path: "/industries/healthcare" },
+    { label: "HIGH TECH", path: "/industries/high-tech" },
+    { label: "MANUFACTURING", path: "/industries/manufacturing" },
+    { label: "RETAIL", path: "/industries/retail" },
+    { label: "TELECOM & MEDIA", path: "/industries/telecom-media" },
   ];
 
   return (
@@ -97,7 +107,37 @@ const TopNavbar = () => {
             )}
           </div>
 
-          {["Delivery", "Industries", "Insights", "About"].map((item) => (
+          <div
+            className="relative"
+            onMouseEnter={() => setIndustriesOpen(true)}
+            onMouseLeave={() => setIndustriesOpen(false)}
+          >
+            <button
+              className="group inline-flex items-center gap-1 text-white/90 transition-colors hover:text-yellow-300"
+              onClick={() => navigate("/industries")}
+            >
+              <span className="text-[11px] uppercase tracking-[0.18em]">
+                Industries
+              </span>
+              <ChevronDown className="h-3 w-3 opacity-80 transition-transform group-hover:translate-y-0.5" />
+            </button>
+
+            {industriesOpen && (
+              <div className="absolute left-0 mt-2 w-64 bg-[#002844] text-xs uppercase tracking-[0.16em] text-white shadow-lg">
+                {industriesItems.map((item) => (
+                  <button
+                    key={item.label}
+                    className="block w-full px-4 py-2 text-left hover:bg-[#00A3D9]"
+                    onClick={() => navigate(item.path)}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {["Delivery", "Insights", "About"].map((item) => (
             <button
               key={item}
               className="group inline-flex items-center gap-1 text-white/90 transition-colors hover:text-yellow-300"
