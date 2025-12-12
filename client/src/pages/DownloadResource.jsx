@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const DEFAULT_RESOURCES = [
   {
@@ -24,7 +25,7 @@ const DEFAULT_RESOURCES = [
 export const ResourceHighlightSection = ({
   title,
   ctaLabel = "Contact Us",
-  ctaHref,
+  ctaHref = "/contact",
   onCtaClick,
   resources = [],
   className = "",
@@ -65,13 +66,23 @@ export const ResourceHighlightSection = ({
 
         <div className="mt-8 flex justify-center">
           {ctaHref ? (
-            <a
-              href={ctaHref}
-              onClick={handleCtaClick}
-              className="min-w-[160px] bg-[#FFB022] px-12 py-3 text-sm font-semibold uppercase tracking-wide text-[#002844]"
-            >
-              {ctaLabel}
-            </a>
+            ctaHref.startsWith("/") ? (
+              <Link
+                to={ctaHref}
+                onClick={handleCtaClick}
+                className="min-w-[160px] bg-[#FFB022] px-12 py-3 text-sm font-semibold uppercase tracking-wide text-[#002844]"
+              >
+                {ctaLabel}
+              </Link>
+            ) : (
+              <a
+                href={ctaHref}
+                onClick={handleCtaClick}
+                className="min-w-[160px] bg-[#FFB022] px-12 py-3 text-sm font-semibold uppercase tracking-wide text-[#002844]"
+              >
+                {ctaLabel}
+              </a>
+            )
           ) : (
             <button
               className="min-w-[160px] bg-[#FFB022] px-12 py-3 text-sm font-semibold uppercase tracking-wide text-[#002844]"
@@ -136,6 +147,7 @@ export const StartAiTransformationSection = (props) => {
     <ResourceHighlightSection
       title="Begin Your AI Journey"
       ctaLabel="Contact Us"
+      ctaHref="/contact"
       resources={DEFAULT_RESOURCES}
       {...props}
     />

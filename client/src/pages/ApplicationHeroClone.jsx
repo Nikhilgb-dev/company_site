@@ -1,7 +1,10 @@
 // HeroClone.jsx
 import React from "react";
+import { Link } from "react-router-dom";
 
-export default function HeroClone({ bgImage = "https://www.aditiconsulting.com/hubfs/App%20Modernization%20header.jpg" }) {
+export default function HeroClone({
+  bgImage = "https://www.aditiconsulting.com/hubfs/App%20Modernization%20header.jpg",
+}) {
   return (
     <header className="relative w-full">
       {/* Background image container (you'll supply the image) */}
@@ -47,7 +50,7 @@ export default function HeroClone({ bgImage = "https://www.aditiconsulting.com/h
                   fontSize: "clamp(2rem, 5vw, 4.25rem)", // responsive scale
                 }}
               >
-                Cloud & Infrastructure — Built for Scale
+                Application + Platform Development
               </h1>
 
               <p className="mt-6 text-base leading-relaxed text-[#E6EEF6] max-w-lg">
@@ -57,7 +60,8 @@ export default function HeroClone({ bgImage = "https://www.aditiconsulting.com/h
               </p>
 
               <div className="mt-8 flex items-center gap-4">
-                <button
+                <Link
+                  to="/contact"
                   className="inline-flex items-center justify-center rounded px-6 py-2 text-sm font-semibold"
                   style={{
                     color: "#00A8C6",
@@ -67,15 +71,7 @@ export default function HeroClone({ bgImage = "https://www.aditiconsulting.com/h
                   aria-label="Connect with an expert"
                 >
                   Connect with an Expert
-                </button>
-
-                {/* Optional secondary action */}
-                <a
-                  href="#contact"
-                  className="text-sm font-medium text-white/90 underline"
-                >
-                  Talk to sales
-                </a>
+                </Link>
               </div>
             </div>
           </div>

@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Menu, X, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { AiAutomationServicesSection } from "./AiAutomationServices"; 
+import { AiAutomationServicesSection } from "./AiAutomationServices";
 import { CaseStudiesAndBlogsSection } from "./CaseStudiesAndBlogsSection";
 import { StartAiTransformationSection } from "./DownloadResource";
 
-// Rewritten content (meaning preserved, wording improved)
-const slides = [
+// Default slide content, can be swapped for other services while keeping the design.
+const defaultSlides = [
   {
     id: 0,
     eyebrow: "On-Demand Webinar",
@@ -146,119 +146,160 @@ const TopNavbar = () => {
   );
 };
 
-export const AiHeroCarousel = () => {
+export const HeroCarousel = ({
+  slides = defaultSlides,
+  autoIntervalMs = 8000,
+  className = "",
+}) => {
   const [active, setActive] = useState(0);
-  const currentSlide = slides[active];
+  const navigate = useNavigate();
+  const hasSlides = slides && slides.length > 0;
+  const currentSlide = hasSlides ? slides[active % slides.length] : null;
+
+  const handleNavigation = (href, onClick) => () => {
+    if (onClick) {
+      onClick();
+      return;
+    }
+    if (!href) return;
+    if (href.startsWith("http")) {
+      window.location.href = href;
+    } else {
+      navigate(href);
+    }
+  };
 
   useEffect(() => {
+    if (!hasSlides || slides.length <= 1) return undefined;
     const id = setInterval(
       () => setActive((prev) => (prev + 1) % slides.length),
-      8000
+      autoIntervalMs
     );
     return () => clearInterval(id);
-  }, []);
+  }, [autoIntervalMs, hasSlides, slides.length]);
+
+  if (!hasSlides || !currentSlide) {
+    return null;
+  }
 
   const goTo = (index) => setActive(index);
   const goNext = () => setActive((prev) => (prev + 1) % slides.length);
 
   return (
-    <div className="flex min-h-screen flex-col text-white">
-      <TopNavbar />
+    <main
+      className={`relative flex-1 overflow-hidden text-white min-h-screen ${className}`}
+    >
+      <div
+        className="pointer-events-none absolute inset-0 -z-10 bg-cover bg-center"
+        style={{ backgroundImage: `url(${currentSlide.bgImage})` }}
+      />
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-black/70 via-black/35 to-black/70" />
 
-      <main className="relative flex-1 overflow-hidden">
-        <div
-          className="pointer-events-none absolute inset-0 -z-10 bg-cover bg-center"
-          style={{ backgroundImage: `url(${currentSlide.bgImage})` }}
-        />
-
-        <div className="relative mx-auto flex min-h-[calc(100vh-72px)] max-w-6xl flex-col justify-center px-4 py-10 lg:px-6 lg:py-16">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentSlide.id}
-              variants={contentVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className="max-w-xl space-y-6"
-            >
-              {currentSlide.showPartners && (
-                <div className="mb-4 flex flex-wrap items-center gap-6 text-sm font-semibold tracking-[0.25em]">
-                  <span className="text-white">SAS</span>
-                  <span className="text-white">ADITI CONSULTING</span>
-                </div>
-              )}
-
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[#FFB022]">
-                {currentSlide.eyebrow}
-              </p>
-
-              <h1 className="text-[40px] leading-[1.1] font-bold text-white sm:text-[46px] md:text-[52px]">
-                {currentSlide.titleLines.map((line) => (
-                  <span key={line} className="block">
-                    {line}
-                  </span>
-                ))}
-              </h1>
-
-              <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-[#E3F2FD]">
-                {currentSlide.subtitle}
-              </p>
-
-              <div className="mt-8 flex flex-wrap gap-4">
-                <motion.button
-                  whileHover={{ y: -2 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="min-w-[210px] border border-[#00A4D9] bg-[#002844] px-8 py-3 text-sm font-semibold"
-                >
-                  {currentSlide.ctaPrimary}
-                </motion.button>
-
-                <motion.button
-                  whileHover={{ y: -2 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="min-w-[260px] border border-[#00A4D9] bg-[#00A4D9] px-8 py-3 text-sm font-semibold"
-                >
-                  {currentSlide.ctaSecondary}
-                </motion.button>
+      <div className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-center px-4 py-14 sm:py-16 lg:px-6 lg:py-20">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentSlide.id ?? active}
+            variants={contentVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="max-w-xl space-y-6"
+          >
+            {currentSlide.showPartners && (
+              <div className="mb-4 flex flex-wrap items-center gap-6 text-sm font-semibold tracking-[0.25em]">
+                <span className="text-white">SAS</span>
+                <span className="text-white">ADITI CONSULTING</span>
               </div>
+            )}
 
-              {currentSlide.extraCardText && (
-                <div className="mt-8 inline-flex items-center gap-4 border border-[#FFB022] px-6 py-4 text-sm font-semibold text-[#FFB022]">
-                  <div className="flex h-10 w-10 items-center justify-center border border-[#FFB022]">
-                    <div className="h-5 w-4 border border-[#FFB022]" />
-                  </div>
-                  <span>{currentSlide.extraCardText}</span>
-                </div>
-              )}
-            </motion.div>
-          </AnimatePresence>
+            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[#FFB022]">
+              {currentSlide.eyebrow}
+            </p>
 
-          <div className="mt-10 flex items-center gap-3">
-            {slides.map((slide, index) => (
-              <button
-                key={slide.id}
-                onClick={() => goTo(index)}
-                className={`flex h-7 w-7 items-center justify-center border text-xs font-semibold ${
-                  index === active
-                    ? "border-[#FFB022] bg-[#FFB022] text-[#00152A]"
-                    : "border-white/70 bg-transparent text-white"
-                }`}
+            <h1 className="text-[32px] leading-[1.1] font-bold text-white sm:text-[40px] md:text-[52px]">
+              {currentSlide.titleLines.map((line) => (
+                <span key={line} className="block">
+                  {line}
+                </span>
+              ))}
+            </h1>
+
+            <p className="mt-4 max-w-xl text-base leading-relaxed text-[#E3F2FD] sm:text-[15px]">
+              {currentSlide.subtitle}
+            </p>
+
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
+              <motion.button
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                className="min-w-[210px] border border-[#00A4D9] bg-[#002844] px-8 py-3 text-sm font-semibold sm:w-auto w-full text-center"
+                onClick={handleNavigation(
+                  currentSlide.ctaPrimaryHref,
+                  currentSlide.onPrimaryClick
+                )}
               >
-                {index + 1}
-              </button>
-            ))}
+                {currentSlide.ctaPrimary}
+              </motion.button>
 
+              <motion.button
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                className="min-w-[260px] border border-[#00A4D9] bg-[#00A4D9] px-8 py-3 text-sm font-semibold sm:w-auto w-full text-center"
+                onClick={handleNavigation(
+                  currentSlide.ctaSecondaryHref,
+                  currentSlide.onSecondaryClick
+                )}
+              >
+                {currentSlide.ctaSecondary}
+              </motion.button>
+            </div>
+
+            {currentSlide.extraCardText && (
+              <div className="mt-8 inline-flex items-center gap-4 border border-[#FFB022] px-6 py-4 text-sm font-semibold text-[#FFB022]">
+                <div className="flex h-10 w-10 items-center justify-center border border-[#FFB022]">
+                  <div className="h-5 w-4 border border-[#FFB022]" />
+                </div>
+                <span>{currentSlide.extraCardText}</span>
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
+
+        <div className="mt-10 flex flex-wrap items-center gap-3">
+          {slides.map((slide, index) => (
+            <button
+              key={slide.id ?? index}
+              onClick={() => goTo(index)}
+              className={`flex h-7 w-7 items-center justify-center border text-xs font-semibold ${
+                index === active
+                  ? "border-[#FFB022] bg-[#FFB022] text-[#00152A]"
+                  : "border-white/70 bg-transparent text-white"
+              }`}
+            >
+              {index + 1}
+            </button>
+          ))}
+
+          {slides.length > 1 && (
             <button
               onClick={goNext}
               className="flex h-7 w-7 items-center justify-center border border-white/80 bg-transparent text-white hover:bg-white/10"
             >
               <ChevronRight className="h-4 w-4" />
             </button>
-          </div>
+          )}
         </div>
-      </main>
+      </div>
+    </main>
+  );
+};
 
+export const AiHeroCarousel = () => {
+  return (
+    <div className="flex min-h-screen flex-col text-white">
+      <TopNavbar />
+      <HeroCarousel slides={defaultSlides} />
       <AiAutomationServicesSection />
       <CaseStudiesAndBlogsSection />
       <StartAiTransformationSection />

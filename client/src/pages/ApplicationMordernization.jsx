@@ -154,8 +154,9 @@ const ApplicationMordernization = () => {
         blogPosts={APP_MOD_BLOG_POSTS}
       />
       <ResourceHighlightSection
-        title="Begin Your AI Journey"
+        title="Start Your AI Transformation"
         ctaLabel="Contact Us"
+        ctaHref="/contact"
         resources={DEFAULT_RESOURCES}
         
       />

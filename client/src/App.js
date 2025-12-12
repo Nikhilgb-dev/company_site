@@ -14,6 +14,8 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import { AiHeroCarousel } from './pages/AiHero';
 import ApplicationMordernization from './pages/ApplicationMordernization';
+import CloudInfrastructure from './pages/CloudInfrastructure';
+import HeroDataAnalytics from './pages/HeroDataAnalytics';
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
         <Route path="/services" element={<Services />} />
         <Route path="/services/ai-automation" element={<AiHeroCarousel />} />
         <Route path="/services/application-modernization" element={<ApplicationMordernization />} />
+        <Route path="/services/cloud-infrastructure" element={<CloudInfrastructure />} />
+        <Route path="/services/data-analytics" element={<HeroDataAnalytics />} />
         <Route path="/how-it-works" element={<HowItWorks />} />
         <Route path="/industries" element={<Industries />} />
         <Route path="/pricing" element={<Pricing />} />
