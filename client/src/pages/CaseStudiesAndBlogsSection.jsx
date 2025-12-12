@@ -1,18 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-const CASE_STUDIES = [
+const DEFAULT_CASE_STUDIES = [
   {
     id: "fleet",
     eyebrow: "CASE STUDY",
-    // reworded title but same idea
-    title:
-      "Predictive Fleet Intelligence: Cutting Downtime, Increasing Revenue",
+    title: "Predictive Fleet Intelligence: Cutting Downtime, Increasing Revenue",
     bullets: [
       "Built a predictive analytics pipeline to profile driver behavior, forecast failures, and schedule maintenance before breakdowns hit operations.",
       "Moving from reactive fixes to proactive services created new monetization avenues and strengthened client trust.",
     ],
     ctaLabel: "Read Now",
-    rightBgImage: "", // placeholder for the right-side background image
+    rightBgImage: "",
   },
   {
     id: "media",
@@ -23,11 +21,11 @@ const CASE_STUDIES = [
       "AI-enabled traceability and automation sped decision-making and reduced manual overhead across the supply chain.",
     ],
     ctaLabel: "Read Now",
-    rightBgImage: "", // placeholder for the right-side background image
+    rightBgImage: "",
   },
 ];
 
-const BLOG_POSTS = [
+const DEFAULT_BLOG_POSTS = [
   {
     id: "blog1",
     label: "BLOG",
@@ -42,7 +40,7 @@ const BLOG_POSTS = [
     label: "BLOG",
     title: "The Role of AI in Next-Gen Telecom",
     excerpt:
-      "Telecom is changing rapidly — AI is powering smarter networks, predictive maintenance, and improved customer experiences...",
+      "Telecom is changing rapidly - AI is powering smarter networks, predictive maintenance, and improved customer experiences...",
     imageUrl:
       "https://www.aditiconsulting.com/hubfs/AI-Generated%20Media/Images/An%20image%20of%20a%20futuristic%20city%20skyline%20with%20selfdriving%20cars%20navigating%20the%20streets%2c%20integrated%20with%20AI%20technology.jpeg",
   },
@@ -75,95 +73,105 @@ const BLOG_POSTS = [
   },
 ];
 
-export const CaseStudiesAndBlogsSection = () => {
+const CaseStudyColumn = ({ item, isImageSide = false }) => {
+  const backgroundStyle =
+    isImageSide && item?.rightBgImage
+      ? { backgroundImage: `url(${item.rightBgImage})` }
+      : {};
+
+  const CtaComponent = item?.ctaHref ? "a" : "button";
+
+  return (
+    <div
+      className={`${
+        isImageSide ? "relative" : "bg-[#002844]"
+      } flex items-center justify-center px-6 py-10 sm:px-10 lg:px-16`}
+    >
+      {isImageSide && (
+        <>
+          <div className="absolute inset-0 bg-cover bg-center" style={backgroundStyle} />
+          <div className="absolute inset-0 bg-black/55" />
+        </>
+      )}
+
+      <div className="relative max-w-md">
+        {item?.eyebrow && (
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#FFB022]">
+            {item.eyebrow}
+          </p>
+        )}
+        {item?.title && (
+          <h3 className="mt-3 text-xl font-bold leading-snug sm:text-[22px]">{item.title}</h3>
+        )}
+        {item?.bullets?.length ? (
+          <ul className="mt-4 space-y-3 text-[13px] leading-relaxed text-[#E3F2FD]">
+            {item.bullets.map((b, i) => (
+              <li key={i} className="flex gap-3">
+                <span className="mt-[2px] text-sm text-[#FFB022]">-</span>
+                <span>{b}</span>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+        {item?.ctaLabel && (
+          <div className="mt-6">
+            <CtaComponent
+              {...(item?.ctaHref ? { href: item.ctaHref } : {})}
+              onClick={item.onCtaClick}
+              className="border border-white px-6 py-2 text-sm font-semibold text-white"
+            >
+              {item.ctaLabel}
+            </CtaComponent>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export const CaseStudiesAndBlogs = ({
+  caseStudies = DEFAULT_CASE_STUDIES,
+  blogPosts = DEFAULT_BLOG_POSTS,
+  className = "",
+}) => {
   const [blogStartIndex, setBlogStartIndex] = useState(0);
 
-  const left = CASE_STUDIES[0];
-  const right = CASE_STUDIES[1];
+  const left = caseStudies[0] || {};
+  const right = caseStudies[1] || caseStudies[0] || {};
+  const hasBlogs = blogPosts.length > 0;
 
   const visibleBlogCards = (() => {
+    if (!hasBlogs) return [];
     const picked = [];
-    const n = BLOG_POSTS.length;
-    for (let offset = 0; offset < 3; offset += 1) {
-      picked.push(BLOG_POSTS[(blogStartIndex + offset) % n]);
+    const n = blogPosts.length;
+    const maxCards = Math.min(3, n);
+    for (let offset = 0; offset < maxCards; offset += 1) {
+      picked.push(blogPosts[(blogStartIndex + offset) % n]);
     }
     return picked;
   })();
 
+  useEffect(() => {
+    setBlogStartIndex(0);
+  }, [blogPosts.length]);
+
   const handlePrev = () => {
-    setBlogStartIndex(
-      (prev) => (prev - 1 + BLOG_POSTS.length) % BLOG_POSTS.length
-    );
+    if (!hasBlogs) return;
+    setBlogStartIndex((prev) => (prev - 1 + blogPosts.length) % blogPosts.length);
   };
 
   const handleNext = () => {
-    setBlogStartIndex((prev) => (prev + 1) % BLOG_POSTS.length);
+    if (!hasBlogs) return;
+    setBlogStartIndex((prev) => (prev + 1) % blogPosts.length);
   };
 
   return (
-    <section className="bg-white">
+    <section className={`bg-white ${className}`}>
       {/* Case study band */}
       <div className="bg-[#002844] text-white">
         <div className="grid min-h-[320px] w-full md:grid-cols-2">
-          {/* Left column: solid color */}
-          <div className="flex items-center justify-center bg-[#002844] px-6 py-10 sm:px-10 lg:px-16">
-            <div className="max-w-md">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#FFB022]">
-                {left.eyebrow}
-              </p>
-              <h3 className="mt-3 text-xl font-bold leading-snug sm:text-[22px]">
-                {left.title}
-              </h3>
-              <ul className="mt-4 space-y-3 text-[13px] leading-relaxed text-[#E3F2FD]">
-                {left.bullets.map((b, i) => (
-                  <li key={i} className="flex gap-3">
-                    <span className="mt-[2px] text-sm text-[#FFB022]">✓</span>
-                    <span>{b}</span>
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-6">
-                <button className="border border-white px-6 py-2 text-sm font-semibold text-white">
-                  {left.ctaLabel}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Right column: background image with overlay */}
-          <div className="relative flex items-center justify-center px-6 py-10 sm:px-10 lg:px-16">
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={
-                right.rightBgImage
-                  ? { backgroundImage: `url(${right.rightBgImage})` }
-                  : {}
-              }
-            />
-            <div className="absolute inset-0 bg-black/55" />
-
-            <div className="relative max-w-md">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#FFB022]">
-                {right.eyebrow}
-              </p>
-              <h3 className="mt-3 text-xl font-bold leading-snug sm:text-[22px]">
-                {right.title}
-              </h3>
-              <ul className="mt-4 space-y-3 text-[13px] leading-relaxed text-[#E3F2FD]">
-                {right.bullets.map((b, i) => (
-                  <li key={i} className="flex gap-3">
-                    <span className="mt-[2px] text-sm text-[#FFB022]">✓</span>
-                    <span>{b}</span>
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-6">
-                <button className="border border-white px-6 py-2 text-sm font-semibold text-white">
-                  {right.ctaLabel}
-                </button>
-              </div>
-            </div>
-          </div>
+          <CaseStudyColumn item={left} />
+          <CaseStudyColumn item={right} isImageSide />
         </div>
       </div>
 
@@ -171,17 +179,19 @@ export const CaseStudiesAndBlogsSection = () => {
       <div className="bg-[#F2F2F2] py-12 sm:py-16">
         {/* Controls row */}
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 pb-6">
-          <div /> {/* spacer */}
+          <div />
           <div className="flex gap-4">
             <button
               onClick={handlePrev}
               className="flex h-7 w-7 items-center justify-center border border-[#006E8F] bg-white text-xs font-semibold text-[#006E8F]"
+              disabled={!hasBlogs || blogPosts.length === 1}
             >
               {"<"}
             </button>
             <button
               onClick={handleNext}
               className="flex h-7 w-7 items-center justify-center border border-[#006E8F] bg-white text-xs font-semibold text-[#006E8F]"
+              disabled={!hasBlogs || blogPosts.length === 1}
             >
               {">"}
             </button>
@@ -192,30 +202,48 @@ export const CaseStudiesAndBlogsSection = () => {
         <div className="mx-auto max-w-6xl px-4">
           <div className="grid gap-6 md:grid-cols-3">
             {visibleBlogCards.map((post) => (
-              <article
-                key={post.id}
-                className="flex flex-col bg-white shadow-sm"
-              >
+              <article key={post.id || post.title} className="flex flex-col bg-white shadow-sm">
                 <div className="h-40 w-full bg-gray-300">
                   {post.imageUrl && (
-                    <img
-                      src={post.imageUrl}
-                      alt={post.title}
-                      className="h-full w-full object-cover"
-                    />
+                    <img src={post.imageUrl} alt={post.title} className="h-full w-full object-cover" />
                   )}
                 </div>
 
                 <div className="flex flex-1 flex-col px-6 py-5 text-left">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-green-600">
-                    {post.label}
-                  </p>
-                  <h4 className="mt-3 text-[15px] font-semibold leading-snug text-[#002844]">
-                    {post.title}
-                  </h4>
-                  <p className="mt-3 flex-1 text-[13px] leading-relaxed text-[#4B5563]">
-                    {post.excerpt}
-                  </p>
+                  {post.label && (
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-green-600">
+                      {post.label}
+                    </p>
+                  )}
+                  {post.title && (
+                    <h4 className="mt-3 text-[15px] font-semibold leading-snug text-[#002844]">
+                      {post.title}
+                    </h4>
+                  )}
+                  {post.excerpt && (
+                    <p className="mt-3 flex-1 text-[13px] leading-relaxed text-[#4B5563]">
+                      {post.excerpt}
+                    </p>
+                  )}
+                  {post.ctaLabel && (
+                    <div className="mt-4">
+                      {post.ctaHref ? (
+                        <a
+                          href={post.ctaHref}
+                          className="text-[13px] font-semibold uppercase tracking-[0.1em] text-[#006E8F]"
+                        >
+                          {post.ctaLabel}
+                        </a>
+                      ) : (
+                        <button
+                          onClick={post.onClick}
+                          className="text-[13px] font-semibold uppercase tracking-[0.1em] text-[#006E8F]"
+                        >
+                          {post.ctaLabel}
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </div>
               </article>
             ))}
@@ -225,3 +253,5 @@ export const CaseStudiesAndBlogsSection = () => {
     </section>
   );
 };
+
+export const CaseStudiesAndBlogsSection = (props) => <CaseStudiesAndBlogs {...props} />;

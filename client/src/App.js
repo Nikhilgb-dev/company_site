@@ -13,6 +13,7 @@ import Pricing from './pages/Pricing';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import { AiHeroCarousel } from './pages/AiHero';
+import ApplicationMordernization from './pages/ApplicationMordernization';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/services" element={<Services />} />
         <Route path="/services/ai-automation" element={<AiHeroCarousel />} />
+        <Route path="/services/application-modernization" element={<ApplicationMordernization />} />
         <Route path="/how-it-works" element={<HowItWorks />} />
         <Route path="/industries" element={<Industries />} />
         <Route path="/pricing" element={<Pricing />} />

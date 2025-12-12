@@ -18,7 +18,7 @@ export default function Navbar() {
 
   const serviceLinks = [
     { label: 'AI + AUTOMATION', href: '/services/ai-automation' },
-    { label: 'APPLICATION MODERNIZATION', href: '/services#application-modernization' },
+    { label: 'APPLICATION MODERNIZATION', href: '/services/application-modernization' },
     { label: 'CLOUD + INFRASTRUCTURE', href: '/services#cloud-infrastructure' },
     { label: 'DATA + ANALYTICS', href: '/services#data-analytics' },
     { label: 'MANAGED SUPPORT', href: '/services#managed-support' },
